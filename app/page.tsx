@@ -10,7 +10,7 @@ import ThemeToggle from './components/ThemeToggle';
  */
 export default function Home() {
   return (
-    <div className="h-screen w-screen p-4 bg-gray-100 dark:bg-gray-950">
+    <div className="h-screen w-screen p-4 bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       {/* 三列响应式布局容器 */}
       <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* 左侧：当前时间显示 */}
