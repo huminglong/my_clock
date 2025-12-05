@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "TODO 应用 - 时间管理工具",
-  description: "一个集成了当前时间显示、倒计时和待办事项管理的单页面应用",
+  title: "Midnight Studio - 时间管理",
+  description: "一个优雅的时间管理应用，集成当前时间、倒计时、秒表和待办事项",
 };
 
 export default function RootLayout({
@@ -24,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300`}
-      >
+      <body className="antialiased">
         {children}
       </body>
     </html>

@@ -4,18 +4,15 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 /**
  * 秒表组件
- * 支持正向计时、开始/暂停/继续/重置
+ * Midnight Studio 设计 - 霜蓝色主题
  */
 export default function Stopwatch() {
-    // 运行状态
     const [isRunning, setIsRunning] = useState(false);
-    const [elapsedTime, setElapsedTime] = useState(0); // 总流逝时间（毫秒）
+    const [elapsedTime, setElapsedTime] = useState(0);
 
-    // 用于精确计时的引用
     const startTimeRef = useRef<number>(0);
     const accumulatedTimeRef = useRef<number>(0);
 
-    // 格式化时间显示 (HH:MM:SS)
     const formatTime = useCallback((ms: number): { hours: string; minutes: string; seconds: string } => {
         const totalSeconds = Math.floor(ms / 1000);
         const hours = Math.floor(totalSeconds / 3600);
@@ -29,7 +26,6 @@ export default function Stopwatch() {
         };
     }, []);
 
-    // 开始计时
     const handleStart = () => {
         startTimeRef.current = Date.now();
         accumulatedTimeRef.current = 0;
@@ -37,26 +33,22 @@ export default function Stopwatch() {
         setIsRunning(true);
     };
 
-    // 暂停计时
     const handlePause = () => {
         accumulatedTimeRef.current = elapsedTime;
         setIsRunning(false);
     };
 
-    // 继续计时
     const handleResume = () => {
         startTimeRef.current = Date.now();
         setIsRunning(true);
     };
 
-    // 重置
     const handleReset = () => {
         setIsRunning(false);
         setElapsedTime(0);
         accumulatedTimeRef.current = 0;
     };
 
-    // 计时器逻辑
     useEffect(() => {
         if (!isRunning) return;
 
@@ -73,84 +65,83 @@ export default function Stopwatch() {
     const hasStarted = elapsedTime > 0 || isRunning;
 
     return (
-        <div className="flex flex-col items-center justify-center h-full p-4 bg-gradient-to-br from-amber-50 to-orange-100 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg">
-            <h2 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-4">
-                秒表
-            </h2>
+        <div className="glass-card flex flex-col items-center justify-center h-full p-6">
+            {/* 标签 */}
+            <span className="section-label mb-4">秒表</span>
 
             {/* 时间显示 */}
-            <div className="flex items-center gap-2 md:gap-4 mb-4">
-                {/* 时 */}
+            <div className="flex items-baseline gap-1 md:gap-2 mb-4">
                 <div className="flex flex-col items-center">
-                    <span className="text-3xl md:text-5xl font-bold text-orange-600 dark:text-orange-400 font-mono">
+                    <span className={`time-digit-frost text-3xl md:text-5xl font-mono font-medium ${isRunning ? 'animate-glow' : ''}`}>
                         {time.hours}
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">时</span>
+                    <span className="time-label">时</span>
                 </div>
 
-                <span className="text-3xl md:text-5xl font-bold text-gray-400">:</span>
+                <span
+                    className="text-2xl md:text-4xl font-light"
+                    style={{ color: 'var(--text-tertiary)' }}
+                >
+                    :
+                </span>
 
-                {/* 分 */}
                 <div className="flex flex-col items-center">
-                    <span className="text-3xl md:text-5xl font-bold text-orange-600 dark:text-orange-400 font-mono">
+                    <span className={`time-digit-frost text-3xl md:text-5xl font-mono font-medium ${isRunning ? 'animate-glow' : ''}`}>
                         {time.minutes}
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">分</span>
+                    <span className="time-label">分</span>
                 </div>
 
-                <span className="text-3xl md:text-5xl font-bold text-gray-400">:</span>
+                <span
+                    className="text-2xl md:text-4xl font-light"
+                    style={{ color: 'var(--text-tertiary)' }}
+                >
+                    :
+                </span>
 
-                {/* 秒 */}
                 <div className="flex flex-col items-center">
-                    <span className="text-3xl md:text-5xl font-bold text-orange-600 dark:text-orange-400 font-mono">
+                    <span className={`time-digit-frost text-3xl md:text-5xl font-mono font-medium ${isRunning ? 'animate-glow' : ''}`}>
                         {time.seconds}
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">秒</span>
+                    <span className="time-label">秒</span>
                 </div>
             </div>
 
+            {/* 运行指示器 */}
+            {isRunning && (
+                <div className="flex items-center gap-2 mb-4">
+                    <span
+                        className="w-2 h-2 rounded-full animate-pulse"
+                        style={{ backgroundColor: 'var(--frost)' }}
+                    />
+                    <span className="text-xs font-ui" style={{ color: 'var(--frost)' }}>
+                        计时中
+                    </span>
+                </div>
+            )}
+
             {/* 控制按钮 */}
-            <div className="flex gap-2">
-                {/* 开始按钮 - 初始状态 */}
+            <div className="flex gap-3">
                 {!hasStarted && (
-                    <button
-                        onClick={handleStart}
-                        className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg 
-                                   transition-colors duration-200 font-medium"
-                    >
+                    <button onClick={handleStart} className="btn btn-primary">
                         开始
                     </button>
                 )}
 
-                {/* 暂停按钮 - 运行中 */}
                 {isRunning && (
-                    <button
-                        onClick={handlePause}
-                        className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg 
-                                   transition-colors duration-200 font-medium"
-                    >
+                    <button onClick={handlePause} className="btn btn-secondary">
                         暂停
                     </button>
                 )}
 
-                {/* 继续按钮 - 暂停状态 */}
                 {!isRunning && hasStarted && (
-                    <button
-                        onClick={handleResume}
-                        className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg 
-                                   transition-colors duration-200 font-medium"
-                    >
+                    <button onClick={handleResume} className="btn btn-primary">
                         继续
                     </button>
                 )}
 
-                {/* 重置按钮 - 已开始后显示 */}
                 {hasStarted && (
-                    <button
-                        onClick={handleReset}
-                        className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg 
-                                   transition-colors duration-200 font-medium"
-                    >
+                    <button onClick={handleReset} className="btn btn-secondary">
                         重置
                     </button>
                 )}

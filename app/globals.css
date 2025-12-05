@@ -1,27 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* 配置 Tailwind 使用 class 策略进行暗色模式切换 */
+/* Tailwind dark mode configuration */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ═══════════════════════════════════════════════════════════════
+   MIDNIGHT STUDIO DESIGN SYSTEM
+   A premium, distinctive aesthetic for time management
+   ═══════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* === Color Palette: Midnight Champagne === */
+
+  /* Light Mode Colors */
+  --cream: #faf8f4;
+  --linen: #f0ebe2;
+  --linen-hover: #e8e2d6;
+  --ink: #1e1e24;
+  --ink-muted: #4a4a52;
+  --ink-subtle: #8a8a92;
+
+  /* Accent Colors */
+  --champagne: #c9a962;
+  --champagne-glow: #e8dcc4;
+  --champagne-muted: #b8a88a;
+  --rose: #c9a9a6;
+  --rose-muted: #d4c4c2;
+  --frost: #7b8db3;
+  --frost-muted: #a8b4ce;
+
+  /* Semantic */
+  --success: #7dab8c;
+  --warning: #d4a574;
+  --danger: #c47a7a;
+
+  /* Light Mode Mappings */
+  --bg-primary: var(--cream);
+  --bg-surface: var(--linen);
+  --bg-surface-hover: var(--linen-hover);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-muted);
+  --text-tertiary: var(--ink-subtle);
+  --border-subtle: rgba(30, 30, 36, 0.08);
+  --border-medium: rgba(30, 30, 36, 0.12);
+
+  /* Glass Effect */
+  --glass-bg: rgba(240, 235, 226, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: rgba(30, 30, 36, 0.06);
 }
 
-/* 暗色模式变量 */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  /* Dark Mode Colors */
+  --midnight: #0d0f14;
+  --surface: #161922;
+  --surface-hover: #1e222d;
+  --surface-elevated: #242836;
+
+  /* Dark Mode Mappings */
+  --bg-primary: var(--midnight);
+  --bg-surface: var(--surface);
+  --bg-surface-hover: var(--surface-hover);
+  --text-primary: #f0ebe2;
+  --text-secondary: #a8a8b0;
+  --text-tertiary: #6a6a72;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.1);
+
+  /* Glass Effect - Dark */
+  --glass-bg: rgba(22, 25, 34, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ═══════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════ */
 
-/* 禁止页面滚动，确保单页面应用 */
 html,
 body {
   overflow: hidden;
@@ -31,12 +86,300 @@ body {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Syne', sans-serif;
+  transition: background-color 0.5s ease, color 0.3s ease;
 }
 
-/* 自定义滚动条样式（用于 TODO 列表内部滚动） */
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND
+   ═══════════════════════════════════════════════════════════════ */
+
+.bg-atmosphere {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-atmosphere::before,
+.bg-atmosphere::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  animation: float 20s ease-in-out infinite;
+}
+
+.bg-atmosphere::before {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--champagne) 0%, transparent 70%);
+  top: -200px;
+  right: -100px;
+  animation-delay: 0s;
+}
+
+.bg-atmosphere::after {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--frost) 0%, transparent 70%);
+  bottom: -150px;
+  left: -100px;
+  animation-delay: -10s;
+}
+
+.dark .bg-atmosphere::before,
+.dark .bg-atmosphere::after {
+  opacity: 0.15;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLASSMORPHIC CARDS
+   ═══════════════════════════════════════════════════════════════ */
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 4px 24px var(--glass-shadow),
+    0 1px 2px var(--glass-shadow);
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    0 2px 4px var(--glass-shadow);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-display {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-ui {
+  font-family: 'Syne', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Time Display Styles */
+.time-display {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.time-digit {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  color: var(--champagne);
+  text-shadow: 0 0 30px rgba(201, 169, 98, 0.3);
+  transition: text-shadow 0.3s ease;
+}
+
+.dark .time-digit {
+  text-shadow: 0 0 40px rgba(201, 169, 98, 0.4);
+}
+
+.time-digit-frost {
+  color: var(--frost);
+  text-shadow: 0 0 30px rgba(123, 141, 179, 0.3);
+}
+
+.dark .time-digit-frost {
+  text-shadow: 0 0 40px rgba(123, 141, 179, 0.4);
+}
+
+.time-digit-rose {
+  color: var(--rose);
+  text-shadow: 0 0 30px rgba(201, 169, 166, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Staggered entrance animation */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+.animate-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-4 {
+  animation-delay: 0.4s;
+}
+
+/* Subtle pulse for running states */
+@keyframes gentle-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-gentle-pulse {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+/* Glow pulse for active timers */
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    text-shadow: 0 0 30px rgba(201, 169, 98, 0.3);
+  }
+
+  50% {
+    text-shadow: 0 0 50px rgba(201, 169, 98, 0.5);
+  }
+}
+
+.animate-glow {
+  animation: glow-pulse 1.5s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn {
+  font-family: 'Syne', sans-serif;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--champagne);
+  color: var(--midnight);
+}
+
+.btn-primary:hover {
+  background: var(--champagne-glow);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(201, 169, 98, 0.3);
+}
+
+.btn-secondary {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--champagne-muted);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INPUTS
+   ═══════════════════════════════════════════════════════════════ */
+
+.input {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  padding: 0.625rem 1rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--champagne);
+  box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.15);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CUSTOM SCROLLBAR
+   ═══════════════════════════════════════════════════════════════ */
+
 .overflow-y-auto::-webkit-scrollbar {
   width: 6px;
 }
@@ -46,19 +389,110 @@ body {
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
+  background-color: var(--champagne-muted);
   border-radius: 3px;
+  opacity: 0.5;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.7);
+  background-color: var(--champagne);
 }
 
-/* 暗色模式滚动条 */
-.dark .overflow-y-auto::-webkit-scrollbar-thumb {
-  background-color: rgba(75, 85, 99, 0.6);
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════ */
+
+.text-champagne {
+  color: var(--champagne);
 }
 
-.dark .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(75, 85, 99, 0.8);
+.text-frost {
+  color: var(--frost);
+}
+
+.text-rose {
+  color: var(--rose);
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+.bg-surface {
+  background: var(--bg-surface);
+}
+
+.bg-surface-hover {
+  background: var(--bg-surface-hover);
+}
+
+.border-subtle {
+  border-color: var(--border-subtle);
+}
+
+.border-medium {
+  border-color: var(--border-medium);
+}
+
+/* Section Labels */
+.section-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* Time unit labels */
+.time-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 0.25rem;
+}
+
+/* Custom checkbox */
+.custom-checkbox {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--border-medium);
+  border-radius: 6px;
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.custom-checkbox:checked {
+  background: var(--champagne);
+  border-color: var(--champagne);
+}
+
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid var(--midnight);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-checkbox:hover {
+  border-color: var(--champagne-muted);
 }

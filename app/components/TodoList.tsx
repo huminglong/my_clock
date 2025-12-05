@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-// TODO 数据结构
 interface Todo {
     id: string;
     title: string;
@@ -11,7 +10,7 @@ interface Todo {
 
 /**
  * TODO 列表组件
- * 支持增删改查，通过 API 路由实现数据持久化
+ * Midnight Studio 设计 - 优雅的任务列表
  */
 export default function TodoList() {
     const [todos, setTodos] = useState<Todo[]>([]);
@@ -19,7 +18,6 @@ export default function TodoList() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // 获取 TODO 列表
     const fetchTodos = useCallback(async () => {
         try {
             setIsLoading(true);
@@ -39,12 +37,10 @@ export default function TodoList() {
         }
     }, []);
 
-    // 初始化加载
     useEffect(() => {
         fetchTodos();
     }, [fetchTodos]);
 
-    // 添加新 TODO
     const handleAddTodo = async () => {
         const trimmedTitle = newTitle.trim();
 
@@ -71,7 +67,6 @@ export default function TodoList() {
         }
     };
 
-    // 切换 TODO 完成状态
     const handleToggleComplete = async (id: string, currentCompleted: boolean) => {
         try {
             const response = await fetch('/api/todos', {
@@ -94,7 +89,6 @@ export default function TodoList() {
         }
     };
 
-    // 删除 TODO
     const handleDeleteTodo = async (id: string) => {
         try {
             const response = await fetch(`/api/todos?id=${id}`, {
@@ -111,26 +105,29 @@ export default function TodoList() {
         }
     };
 
-    // 处理键盘事件（Enter 键添加）
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handleAddTodo();
         }
     };
 
-    // 统计信息
     const completedCount = todos.filter((t) => t.completed).length;
     const totalCount = todos.length;
 
     return (
-        <div className="flex flex-col h-full p-4 bg-gradient-to-br from-orange-50 to-amber-100 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg">
-            <h2 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2 text-center">
-                待办事项
-            </h2>
+        <div className="glass-card flex flex-col h-full p-6">
+            {/* 标题区域 */}
+            <div className="text-center mb-4">
+                <span className="section-label">待办事项</span>
 
-            {/* 统计信息 */}
-            <div className="text-sm text-gray-500 dark:text-gray-400 text-center mb-3">
-                已完成 {completedCount} / {totalCount}
+                {/* 统计信息 */}
+                <div
+                    className="text-sm font-ui mt-2"
+                    style={{ color: 'var(--text-tertiary)' }}
+                >
+                    <span style={{ color: 'var(--success)' }}>{completedCount}</span>
+                    <span> / {totalCount} 已完成</span>
+                </div>
             </div>
 
             {/* 添加新 TODO */}
@@ -141,17 +138,12 @@ export default function TodoList() {
                     onChange={(e) => setNewTitle(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="添加新任务..."
-                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
-                     bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-                     focus:outline-none focus:ring-2 focus:ring-amber-500
-                     placeholder:text-gray-400"
+                    className="input flex-1"
                 />
                 <button
                     onClick={handleAddTodo}
                     disabled={!newTitle.trim()}
-                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg 
-                     transition-colors duration-200 font-medium
-                     disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-primary"
                 >
                     添加
                 </button>
@@ -159,7 +151,10 @@ export default function TodoList() {
 
             {/* 错误提示 */}
             {error && (
-                <div className="text-red-500 text-sm mb-2 text-center">
+                <div
+                    className="text-sm mb-2 text-center font-ui"
+                    style={{ color: 'var(--danger)' }}
+                >
                     {error}
                 </div>
             )}
@@ -167,39 +162,48 @@ export default function TodoList() {
             {/* TODO 列表 */}
             <div className="flex-1 overflow-y-auto">
                 {isLoading ? (
-                    <div className="text-center text-gray-500 dark:text-gray-400 py-4">
+                    <div
+                        className="text-center py-8 font-ui"
+                        style={{ color: 'var(--text-tertiary)' }}
+                    >
                         加载中...
                     </div>
                 ) : todos.length === 0 ? (
-                    <div className="text-center text-gray-500 dark:text-gray-400 py-4">
+                    <div
+                        className="text-center py-8 font-ui"
+                        style={{ color: 'var(--text-tertiary)' }}
+                    >
                         暂无待办事项
                     </div>
                 ) : (
                     <ul className="space-y-2">
-                        {todos.map((todo) => (
+                        {todos.map((todo, index) => (
                             <li
                                 key={todo.id}
-                                className={`flex items-center gap-2 p-3 rounded-lg transition-all duration-200
-                           ${todo.completed
-                                        ? 'bg-green-100 dark:bg-green-900/30'
-                                        : 'bg-white dark:bg-gray-700'
-                                    }`}
+                                className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300"
+                                style={{
+                                    background: todo.completed
+                                        ? 'rgba(125, 171, 140, 0.1)'
+                                        : 'var(--bg-surface)',
+                                    border: '1px solid var(--border-subtle)',
+                                    animationDelay: `${index * 50}ms`,
+                                }}
                             >
-                                {/* 完成状态复选框 */}
+                                {/* 自定义复选框 */}
                                 <input
                                     type="checkbox"
                                     checked={todo.completed}
                                     onChange={() => handleToggleComplete(todo.id, todo.completed)}
-                                    className="w-5 h-5 rounded border-gray-300 text-amber-500 
-                             focus:ring-amber-500 cursor-pointer"
+                                    className="custom-checkbox"
                                 />
 
                                 {/* 任务标题 */}
                                 <span
-                                    className={`flex-1 ${todo.completed
-                                            ? 'line-through text-gray-400 dark:text-gray-500'
-                                            : 'text-gray-800 dark:text-gray-200'
-                                        }`}
+                                    className="flex-1 font-ui transition-all duration-200"
+                                    style={{
+                                        color: todo.completed ? 'var(--text-tertiary)' : 'var(--text-primary)',
+                                        textDecoration: todo.completed ? 'line-through' : 'none',
+                                    }}
                                 >
                                     {todo.title}
                                 </span>
@@ -207,12 +211,18 @@ export default function TodoList() {
                                 {/* 删除按钮 */}
                                 <button
                                     onClick={() => handleDeleteTodo(todo.id)}
-                                    className="p-1 text-red-400 hover:text-red-600 hover:bg-red-100 
-                             dark:hover:bg-red-900/30 rounded transition-colors duration-200"
+                                    className="p-1.5 rounded-lg transition-all duration-200 opacity-50 hover:opacity-100"
+                                    style={{ color: 'var(--danger)' }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(196, 122, 122, 0.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'transparent';
+                                    }}
                                     title="删除"
                                 >
                                     <svg
-                                        className="w-5 h-5"
+                                        className="w-4 h-4"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
