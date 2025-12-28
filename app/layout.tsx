@@ -4,6 +4,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Midnight Studio - 时间管理",
   description: "一个优雅的时间管理应用，集成当前时间、倒计时、秒表和待办事项",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml", sizes: "512x512" },
+    ],
+    apple: "/icon.svg",
+    shortcut: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
